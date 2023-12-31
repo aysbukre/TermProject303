@@ -1,16 +1,44 @@
-# This is a sample Python script.
+import re
+import nltk
+from nltk.corpus import words
+from fuzzywuzzy import fuzz
 
-# Press Shift+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
+nltk.download("words")
 
+class Checker:
+    def __init__(self):
+        pass
 
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
+    def check(self, word):
+        checked_word = re.sub(r"[^\w]", "", word.lower())
+        if checked_word in words.words():
+            print(f"The word '{checked_word}' is correctly spelled.")
+        else:
+            suggestions = self.get_suggestions(checked_word)
+            if suggestions:
+                self.show_suggestions(checked_word, suggestions)
+            else:
+                print(f"No suggestions found for '{checked_word}'.")
 
+    # Suggestions are found using Levenshtein distance
+    def get_suggestions(self, word, threshold=80):
+        return [w for w in words.words() if fuzz.ratio(word, w.lower()) > threshold]
 
-# Press the green button in the gutter to run the script.
-if __name__ == '__main__':
-    print_hi('PyCharm ')
+    def show_suggestions(self, word, suggestions):
+        print(f"Suggestions for '{word}':")
+        for suggestion in suggestions:
+            print(suggestion)
 
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+if __name__ == "__main__":
+    checker = Checker()
+
+    while True:
+        input_word = input("Enter a word without spaces (or 'exit' to end): ")
+
+        if input_word.lower() == 'exit':
+            break
+
+        if ' ' in input_word:
+            print("Please enter one word at a time.(Spaces were used or more than one word was entered.)")
+        else:
+            checker.check(input_word)
