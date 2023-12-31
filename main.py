@@ -1,16 +1,35 @@
-# This is a sample Python script.
+import re
+import tkinter as tk
+from tkinter.scrolledtext import ScrolledText
+import nltk
+from nltk.corpus import words
+nltk.download("words")
 
-# Press Shift+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
+class SpellingChecker:
+    def __init__(self):
+        self.root = tk.Tk()
+        self.root.geometry("600x500")
 
+        self.text = ScrolledText(self.root, font=("Arial", 14))
+        self.text.bind("<KeyRelease>", self.check)
+        self.text.pack()
 
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
+        self.old_spaces = 0
+        self.root.mainloop()
 
+    def check(self, event):
+        content = self.text.get("1.0", tk.END)
+        space_count = content.count(" ")
 
-# Press the green button in the gutter to run the script.
-if __name__ == '__main__':
-    print_hi('deneme ')
+        if space_count != self.old_spaces:
+            self.old_spaces = space_count
 
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+            for tag in self.text.tag_names():
+                self.text.tag_delete(tag)
+
+            for word in content.split(" "):
+                if re.sub(r"[^\w]", "",word.lower()) not in words.words():
+                    position = content.find(word)
+                    self.text.tag_add(word, f"1.{position}", f"1.{position +len(word)}")
+                    self.text.tag_config(word, foreground="red")
+SpellingChecker()
