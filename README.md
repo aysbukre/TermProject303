@@ -30,7 +30,8 @@ python3 main.py
 
 *To exit the program, enter 'q' when prompted.
 
-Notes
+Notes:
+
 The script uses a keyboard layout to calculate the distance between characters, which may influence the suggestions.
 Suggestions are generated based on various transformations, including shortenings, vowel swaps, and spelling variations.
 Keyboard distances between the input word and suggestions are displayed for each suggestion.
