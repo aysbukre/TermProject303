@@ -47,3 +47,33 @@ def shortenings(word):
     for p in product(*word):
         yield ''.join(p)
 
+
+def count_duplicates(string, i):
+    # Count how many times a character appears after index `i` in `string`.
+    initial_i = i
+    last = string[i]
+    while i+1 < len(string) and string[i+1] == last:
+        i += 1
+    return i-initial_i
+
+
+def apply_vowel_swaps(word):
+    # Return flat option list of all possible variations of the word by swapping vowels.
+    vowels = "aeiou"
+    word = list(word)
+    for i, l in enumerate(word):
+        if type(l) == list:
+            pass
+        elif l in vowels:
+            word[i] = list(vowels)
+
+    for p in product(*word):
+        yield ''.join(p)
+
+
+def shortenings_and_applyVowelSwaps(word):
+    # Generate all possible words from the input word that can be formed by either.
+    for shortened in shortenings(word):
+        for version in apply_vowel_swaps(shortened):
+            yield version
+
