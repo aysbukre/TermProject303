@@ -122,3 +122,31 @@ def suggestions(word, real_words):
             (set(shortenings(word))  | set(apply_vowel_swaps(word)) | set(variants(word)) | set(shortenings_and_applyVowelSwaps(word)) | set(double_variants(word))) & real_words or
             {"NO SUGGESTION"})
 
+# The main script.
+if __name__ == '__main__':
+    # Train the initial word model with NLTK words dataset.
+    word_model = train(" ".join(nltk_words.words()))
+    real_words = set(word_model)
+
+    # Add more training from additional text files.
+    texts = [
+        'lemmas.txt',
+        'alice-in-wonderland.txt'
+    ]
+
+    word_model = train_from_files(texts, word_model)
+
+    try:
+        while True:
+            word = input('>')
+            if(word=='q'):
+                break;
+
+            # Generate suggestions for the input word and print them along with keyboard distances.
+            possibilities = suggestions(word, real_words)
+            sorted_results = sorted([(x, keyboard_distance(word, x)) for x in possibilities], key=lambda item: item[1])
+            print(sorted_results)
+
+    except (EOFError, KeyboardInterrupt):
+        exit(0)
+        
