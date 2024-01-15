@@ -77,3 +77,26 @@ def shortenings_and_applyVowelSwaps(word):
         for version in apply_vowel_swaps(shortened):
             yield version
 
+def words(text):
+    # Generates an iterator over each unique word found within `text`, including duplicates.
+    return re.findall('[a-z]+', text.lower())
+
+
+def train(text, model=None):
+    # Train spelling correction algorithm on given `text`.
+    model = collections.defaultdict(lambda: 0) if model is None else model
+    for word in words(text):
+        model[word] += 1
+    return model
+
+word_model = train(' '.join(nltk_words.words()))
+
+def train_from_files(file_list, model=None):
+    # Train a spelling correction algorithm using a set of files.
+    for f in file_list:
+        model = train(open(f).read(), model)
+    return model
+
+
+
+
